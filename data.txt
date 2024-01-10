@@ -1,0 +1,21 @@
+INSERT INTO inventory.customers(
+	id, first_name, last_name, email)
+	VALUES (14, 'juan roman', 'riquelme', 'roman@test.com');
+	
+SELECT * FROM inventory.customers;
+
+CREATE TABLE public.users (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    dni VARCHAR(20) UNIQUE NOT NULL
+);
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Lionel Messi', 'messi@example.com', '123456789'),
+    ('Cristiano Ronaldo', 'ronaldo@example.com', '987654321'),
+    ('Neymar Jr.', 'neymar@example.com', '456789123'),
+    ('Kylian Mbappé', 'mbappe@example.com', '789123456'),
+    ('Mohamed Salah', 'salah@example.com', '321654987');
+	
+SELECT * FROM public.users;

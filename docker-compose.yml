@@ -1,4 +1,4 @@
-version: '1'
+version: '3'
 
 services:
     postgres:
@@ -114,25 +114,97 @@ services:
 networks:
   mynetwork:
     driver: bridge
-        
+    driver_opts:
+      com.docker.network.bridge.name: mynetwork
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.bridge.enable_icc: "true"
+
 volumes:
   postgres13_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/postgresql/data
+
   postgres13_logs:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/postgresql
+
   zookeeper_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /zookeeper/data
+
   zookeeper_txns:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /zookeeper/txns
+
   zookeeper_logs:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /zookeeper/logs
+
   kafka_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /kafka/data
+
   kafka_logs:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /kafka/logs
+
   kafka_conf:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /kafka/config
+
   debezium_logs:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /debezium/logs
+
   debezium_conf:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /debezium/config
+
+# Post -> http://localhost:8083/connectors
+# {
+#     "name": "customers-connector",
+#     "config": {
+#         "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+#         "database.hostname": "postgres",
+#         "database.port": "5432",
+#         "database.user": "postgres",
+#         "database.password": "postgres",
+#         "database.dbname": "postgres",
+#         "database.server.name": "dbserver1",
+#         "table.include.list": "inventory.customers",
+#         "topic.prefix": "dbserver1",
+#         "name": "customers-connector"
+#     },
+#     "tasks": [],
+#     "type": "source"
+# }
