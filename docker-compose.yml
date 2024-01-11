@@ -2,17 +2,18 @@ version: '3'
 
 services:
     postgresDB13:
-      image: postgres:13
+      image: postgresdb
       container_name: postgresDB13
       restart: "no"
       ports:
           - "5433:5432"
       environment:
-          POSTGRES_USER: Adrian13
-          POSTGRES_PASSWORD: Adrian13..
-      # volumes:
-      #     - postgres13_data:/var/lib/postgresql/data
-      #     - postgres13_logs:/var/log/postgresql
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+      volumes:
+          # - ./config/postgresql.conf:/etc/postgresql/16/main/postgresql.conf
+          - ./postgres13_data:/var/lib/postgresql/data
+          - ./postgres13_logs:/var/log/postgresql
       networks:
           - mynetwork
 
