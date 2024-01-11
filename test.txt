@@ -173,3 +173,51 @@ volumes:
       type: none
       o: bind
       device: /debezium/config
+
+# Post -> http://localhost:8083/connectors
+# {
+#     "name": "customers-connector",
+#     "config": {
+#         "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+#         "database.hostname": "postgres",
+#         "database.port": "5432",
+#         "database.user": "postgres",
+#         "database.password": "postgres",
+#         "database.dbname": "postgres",
+#         "database.server.name": "dbserver1",
+#         "table.include.list": "inventory.customers",
+#         "topic.prefix": "dbserver1",
+#         "name": "customers-connector"
+#     },
+#     "tasks": [],
+#     "type": "source"
+# }
+
+
+
+Error while validating connector config: Postgres server wal_level property must be 'logical' but is: 'replica'
+
+Conecta a PostgreSQL:
+Abre pgAdmin 4 y conéctate a tu servidor PostgreSQL.
+
+Consulta la Configuración Actual:
+En la interfaz de pgAdmin 4, selecciona tu servidor PostgreSQL en el árbol de navegación a la izquierda. Luego, selecciona "Tools" y después "Query Tool".
+
+Ejecuta una Consulta SQL:
+En la ventana de la herramienta de consulta, ejecuta la siguiente consulta SQL para verificar el valor actual de wal_level:
+
+sql
+Copy code
+SHOW wal_level;
+Modifica wal_level:
+Si la consulta muestra que wal_level es "replica" y necesitas cambiarlo a "logical", ejecuta la siguiente consulta SQL para modificarlo:
+
+sql
+Copy code
+ALTER SYSTEM SET wal_level = 'logical';
+Guarda los cambios ejecutando:
+
+sql
+Copy code
+SELECT pg_reload_conf();
+Reinicia el Servidor PostgreSQL:
