@@ -17,20 +17,20 @@ services:
       networks:
         - mynetwork
 
-    mongo:
-        image: debezium/example-mongodb:1.9
-        container_name: mongodb
-        restart: "no"
-        ports:
-            - "27018:27018"
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: root
-        volumes:
-            - mongodb_data:/data/db
-            - mongodb_config:/data/configdb
-        networks:
-            - mynetwork
+    # mongo:
+    #     image: debezium/example-mongodb:1.9
+    #     container_name: mongodb
+    #     restart: "no"
+    #     ports:
+    #         - "27018:27018"
+    #     environment:
+    #         MONGO_INITDB_ROOT_USERNAME: root
+    #         MONGO_INITDB_ROOT_PASSWORD: root
+    #     volumes:
+    #         - mongodb_data:/data/db
+    #         - mongodb_config:/data/configdb
+    #     networks:
+    #         - mynetwork
 
     zookeeper:
       image: wurstmeister/zookeeper:latest
@@ -188,7 +188,7 @@ volumes:
       o: bind
       device: /debezium/config
 
-  mongodb_data:
-    driver: local
-  mongodb_config:
-    driver: local
+  # mongodb_data:
+  #   driver: local
+  # mongodb_config:
+  #   driver: local

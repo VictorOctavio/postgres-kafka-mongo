@@ -38,7 +38,7 @@ def process_event(event_data, mongo_collection):
 
     # Ejemplo: Actualizar en MongoDB
     elif event_data['payload']['op'] == 'u':  # 'u' indica una operación de actualización
-        document_id = event_data['payload']['after']['_id']
+        document_id = event_data['payload']['after']['id']
         update_data = event_data['payload']['after']
         mongo_collection.update_one({'_id': document_id}, {'$set': update_data})
 
