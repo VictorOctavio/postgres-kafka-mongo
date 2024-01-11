@@ -18,8 +18,8 @@ services:
         - mynetwork
 
     mongo:
-        image: mongo:4.4.26
-        container_name: mongoDB4_4_26
+        image: debezium/example-mongodb:1.9
+        container_name: mongodb
         restart: "no"
         ports:
             - "27018:27018"
@@ -77,29 +77,10 @@ services:
         OFFSET_STORAGE_TOPIC: my_connect_offsets
         STATUS_STORAGE_TOPIC: my_connect_statuses
         BOOTSTRAP_SERVERS: kafka:29092
-        GROUP_ID: 1
       depends_on:
         - kafka
         - zookeeper
         - postgres  
-      networks:
-        - mynetwork
-
-    mongo-connector:
-      image: debezium/connect:1.9
-      ports:
-        - 8084:8083
-      environment:
-        GROUP_ID: 2
-        CONFIG_STORAGE_TOPIC: my_connect_configs
-        OFFSET_STORAGE_TOPIC: my_connect_offsets
-        STATUS_STORAGE_TOPIC: my_connect_statuses
-        BOOTSTRAP_SERVERS: kafka:29092
-        MONGODB_HOSTS: mongo:27018
-        MONGODB_NAME: mongodatabase
-      depends_on:
-        - kafka
-        - mongo
       networks:
         - mynetwork
 
@@ -108,7 +89,6 @@ services:
       restart: "no"
       environment:
         KAFKA_BROKERCONNECT: "kafka:29092"
-        # JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
       ports:
         - 9000:9000
       depends_on:
@@ -212,22 +192,3 @@ volumes:
     driver: local
   mongodb_config:
     driver: local
-
-# Post -> http://localhost:8083/connectors
-# {
-#     "name": "customers-connector",
-#     "config": {
-#         "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-#         "database.hostname": "postgres",
-#         "database.port": "5432",
-#         "database.user": "postgres",
-#         "database.password": "postgres",
-#         "database.dbname": "postgres",
-#         "database.server.name": "dbserver1",
-#         "table.include.list": "inventory.customers",
-#         "topic.prefix": "dbserver1",
-#         "name": "customers-connector"
-#     },
-#     "tasks": [],
-#     "type": "source"
-# }

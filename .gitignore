@@ -1,1 +1,4 @@
 ./Errors.txt
+/venv
+/postgres13_logs
+/postgres13_data
