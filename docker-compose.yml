@@ -16,7 +16,22 @@ services:
         - postgres13_logs:/var/log/postgresql
       networks:
         - mynetwork
-            
+
+    mongo:
+        image: mongo:4.4.26
+        container_name: mongoDB4_4_26
+        restart: "no"
+        ports:
+            - "27018:27018"
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: root
+        volumes:
+            - mongodb_data:/data/db
+            - mongodb_config:/data/configdb
+        networks:
+            - mynetwork
+
     zookeeper:
       image: wurstmeister/zookeeper:latest
       environment:
@@ -62,10 +77,29 @@ services:
         OFFSET_STORAGE_TOPIC: my_connect_offsets
         STATUS_STORAGE_TOPIC: my_connect_statuses
         BOOTSTRAP_SERVERS: kafka:29092
+        GROUP_ID: 1
       depends_on:
         - kafka
         - zookeeper
         - postgres  
+      networks:
+        - mynetwork
+
+    mongo-connector:
+      image: debezium/connect:1.9
+      ports:
+        - 8084:8083
+      environment:
+        GROUP_ID: 2
+        CONFIG_STORAGE_TOPIC: my_connect_configs
+        OFFSET_STORAGE_TOPIC: my_connect_offsets
+        STATUS_STORAGE_TOPIC: my_connect_statuses
+        BOOTSTRAP_SERVERS: kafka:29092
+        MONGODB_HOSTS: mongo:27018
+        MONGODB_NAME: mongodatabase
+      depends_on:
+        - kafka
+        - mongo
       networks:
         - mynetwork
 
@@ -173,6 +207,11 @@ volumes:
       type: none
       o: bind
       device: /debezium/config
+
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
 
 # Post -> http://localhost:8083/connectors
 # {
