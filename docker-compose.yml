@@ -81,6 +81,9 @@ services:
         - kafka
         - zookeeper
         - postgres  
+      # volumes:
+      #   - debezium_conf:/kafka/config
+      #   - debezium_logs:/debezium/logs
       networks:
         - mynetwork
 
