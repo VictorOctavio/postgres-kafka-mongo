@@ -6,7 +6,7 @@ from pymongo import MongoClient
 consumer_conf = {
     'bootstrap.servers': 'localhost:9092',
     'group.id': 'thisgroup',
-    # 'auto.offset.reset': 'earliest'
+    'auto.offset.reset': 'earliest'
 }
 
 consumer = Consumer(consumer_conf)
