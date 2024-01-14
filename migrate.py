@@ -17,7 +17,8 @@ mongo_config = {
     'port': 27017,
     'username': 'root',
     'password': 'root',
-    'database': 'mongodb'
+    'database': 'mongodb',
+    'ssl': True,
 }
 
 def migrate_data(collection_name):
@@ -26,7 +27,7 @@ def migrate_data(collection_name):
     pg_cursor = pg_conn.cursor()
 
     # Conexión a MongoDB
-    mongo_client = MongoClient('mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority')
+    mongo_client = MongoClient('mongodb+srv://root:root@cluster.esryp20.mongodb.net/')
     mongo_db = mongo_client[mongo_config['database']]
 
     try:

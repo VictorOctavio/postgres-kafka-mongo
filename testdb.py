@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # Configuración de conexión a mongodb+srv://root:<password>@cluster.esryp20.mongodb.net/
-mongo_client = MongoClient('mongodb+srv://root:root@cluster.esryp20.mongodb.net/')
+mongo_client = MongoClient('mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority')
 mongo_db = mongo_client['mongodb']
 mongo_collection = mongo_db['users']
 

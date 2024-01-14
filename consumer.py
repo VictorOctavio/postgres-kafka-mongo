@@ -2,7 +2,7 @@ import json
 from confluent_kafka import Consumer, KafkaError
 from pymongo import MongoClient
 
-# Configuración del consumidor Kafka
+# Iinitialize consumer kafka
 consumer_conf = {
     'bootstrap.servers': 'localhost:9092',
     'group.id': 'thisgroup',
@@ -11,12 +11,12 @@ consumer_conf = {
 
 consumer = Consumer(consumer_conf)
 
-# Configuración de conexión a MongoDB
+# Initialize mongodb connection
 mongo_client = MongoClient('mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority')
 mongo_db = mongo_client['mongodb']
 mongo_collection = mongo_db['users']
 
-# Suscripción al tema de Kafka
+# Subscribe to kafka topic
 consumer.subscribe(['dbserver1.public.users'])
 
 print("Start consumer mongo collection")
@@ -26,20 +26,19 @@ def process_event(event_data, mongo_collection):
     print("new message: :)")
     # Implementa la lógica de procesamiento aquí
 
-    # Ejemplo: Insertar en MongoDB
+    # Insert a new user into the collection
     if event_data['payload']['op'] == 'c':  # 'c' indica una operación de inserción
         document = event_data['payload']['after']
         mongo_collection.insert_one(document)
 
-    # Ejemplo: Actualizar en MongoDB
-    # elif event_data['payload']['op'] == 'u':
-    #     document_id = event_data['payload']['after']['_id']
-    #     update_data = event_data['payload']['after']
-    #     mongo_collection.update_one({'_id': document_id}, {'$set': update_data})
+    # Update User in MongoDB
+    elif event_data['payload']['op'] == 'u':
+        document_id = event_data['payload']['after']['id']
+        update_data = event_data['payload']['after']
+        mongo_collection.update_one({'id': document_id}, {'$set': update_data})
 
-    # Puedes agregar lógica para otras operaciones (eliminar, por ejemplo) según sea necesario
 
-# Procesamiento de eventos
+# Process events
 try:
     while True:
         msg = consumer.poll(1.0)
@@ -53,7 +52,7 @@ try:
                 print(msg.error())
                 break
 
-        # Procesar el mensaje
+        # Proces message
         event_data = json.loads(msg.value())
         process_event(event_data, mongo_collection)
 
