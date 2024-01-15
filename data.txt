@@ -19,3 +19,22 @@ INSERT INTO public.users (nombre, email, dni) VALUES
     ('Mohamed Salah', 'salah@example.com', '321654987');
 	
 SELECT * FROM public.users;
+
+CREATE TABLE public.autos (
+    id SERIAL PRIMARY KEY,
+    marca VARCHAR(50) NOT NULL,
+    modelo VARCHAR(50) NOT NULL,
+    usuario_id INTEGER REFERENCES public.users(id) ON DELETE CASCADE
+);
+
+-- Insertar autos de prueba
+INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
+    ('Toyota', 'Corolla', 1),
+    ('Honda', 'Civic', 2),
+    ('Ford', 'Focus', 5),
+    ('Chevrolet', 'Malibu', 4),
+    ('Hyundai', 'Elantra', 6),
+    ('Audi', 'rs6', 6),
+    ('Volkswagen', 'Jetta', 7);
+	
+SELECT * FROM public.autos;

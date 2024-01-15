@@ -14,9 +14,8 @@ services:
       #     - postgres13_data:/var/lib/postgresql/data
       #     - postgres13_logs:/var/log/postgresql
       networks:
-          - mynetwork
+        - mynetwork
 
-            
     zookeeper:
       image: wurstmeister/zookeeper:latest
       environment:
@@ -65,7 +64,10 @@ services:
       depends_on:
         - kafka
         - zookeeper
-        - postgresDB13  
+        - postgres  
+      volumes:
+        - debezium_conf:/kafka/config
+        - debezium_logs:/debezium/logs
       networks:
         - mynetwork
 
@@ -74,7 +76,6 @@ services:
       restart: "no"
       environment:
         KAFKA_BROKERCONNECT: "kafka:29092"
-        # JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
       ports:
         - 9000:9000
       depends_on:
