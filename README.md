@@ -7,9 +7,13 @@ de datos PostgreSQL a un topic de Kafka. Además, se proporciona un script de Py
 
 ### 1. Ejecutar el Contenedor
 
-Asegúrate de tener Docker y Docker Compose instalados en tu máquina. Luego, ejecuta el siguiente comando en la raíz del proyecto:
+- Asegúrate de tener Docker y Docker Compose instalados en tu máquina. Luego, ejecuta el siguiente comando en la raíz del proyecto:
 
 sudo docker-compose up --build
+
+- Tambien se puede ejecutar el comando de forma desatendida usando:
+
+sudo docker-compose up -d
 
 ### 2. Cargar la Tabla de Prueba
 
@@ -31,8 +35,9 @@ A traves de POSTMAN se envia a http://localhost:8083/connectors un metodo POST y
      "database.server.name": "dbserver1",
      "schema.include.list": "public",
      "table.include.list": "public.users",
-     "topic.prefix": "dbserver"
-    //  "slot.name": "soltid_1"
+     "topic.prefix": "dbserver",
+     "slot.name": "soltid_1",
+     "plugin.name": "pgoutput"
   }
 }
 
