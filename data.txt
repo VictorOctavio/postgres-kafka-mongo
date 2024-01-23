@@ -1,8 +1,12 @@
-INSERT INTO inventory.customers(
+-- FALTA CREAR SCHEMA y TABLA siguientes para probar:
+
+/*INSERT INTO inventory.customers(
 	id, first_name, last_name, email)
 	VALUES (14, 'juan roman', 'riquelme', 'roman@test.com');
 	
-SELECT * FROM inventory.customers;
+SELECT * FROM inventory.customers;*/
+
+-- SI FUNCIONA:
 
 CREATE TABLE public.users (
     id SERIAL PRIMARY KEY,
@@ -16,7 +20,9 @@ INSERT INTO public.users (nombre, email, dni) VALUES
     ('Cristiano Ronaldo', 'ronaldo@example.com', '987654321'),
     ('Neymar Jr.', 'neymar@example.com', '456789123'),
     ('Kylian Mbappé', 'mbappe@example.com', '789123456'),
-    ('Mohamed Salah', 'salah@example.com', '321654987');
+    ('Mohamed Salah', 'salah@example.com', '321654987'),
+    ('Lionel Scaloni', 'scaloni@example.com', '587423169'),
+    ('Anibal Pachano', 'pachano@example.com', '546123789');
 	
 SELECT * FROM public.users;
 
