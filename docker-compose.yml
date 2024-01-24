@@ -4,7 +4,7 @@ services:
     postgres:
       image: postgres:13
       container_name: postgresDB13
-      restart: "no"
+      restart: always
       ports:
         - "5433:5432"
       environment:
@@ -19,6 +19,7 @@ services:
     zookeeper:
       image: wurstmeister/zookeeper:latest
       container_name: WURzookeeper
+      restart: always
       environment:
         ZOOKEEPER_CLIENT_PORT: 2181
         ZOOKEEPER_TICK_TIME: 2000
@@ -34,7 +35,7 @@ services:
     kafka:
       image: wurstmeister/kafka:latest
       container_name: WURkafka
-      restart: "no"
+      restart: always
       links:
         - zookeeper
       ports:
@@ -57,6 +58,7 @@ services:
     debezium:
       image: debezium/connect:1.9
       container_name: Ddebezium
+      restart: always
       ports:
         - 8083:8083
       environment:
@@ -77,7 +79,7 @@ services:
     kafdrop:
       image: obsidiandynamics/kafdrop
       container_name: kafdrop
-      restart: "no"
+      restart: always
       environment:
         KAFKA_BROKERCONNECT: "kafka:29092"
       ports:
@@ -90,6 +92,7 @@ services:
     debezium-ui:
       image: debezium/debezium-ui:2.4
       container_name: debezium_ui
+      restart: always
       depends_on:
         - debezium
       restart: always
