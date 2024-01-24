@@ -9,7 +9,7 @@ Invoke-WebRequest -Uri 'http://localhost:8083/connectors/' -Method Post -Headers
 
 - LINUX:
 
-    -OP 1:
+    -Conectar OP 1:
 
 curl --header "Content-Type: application/json" \
   --request POST \
@@ -17,7 +17,7 @@ curl --header "Content-Type: application/json" \
   http://localhost:8083/connectors/
 
 
-    -OP 2:
+    -Conectar OP 2:
 
 curl --header "Content-Type: application/json"   --request POST   --data @connector_post.json   http://localhost:8083/connectors/
 
