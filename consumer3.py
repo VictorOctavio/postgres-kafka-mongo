@@ -22,7 +22,7 @@ mongo_collection = mongo_db['accounts']
 user_states = {}
 
 # Subscribe to kafka topics
-consumer.subscribe(['dbserver1.bank.users', 'dbserver1.bank.accounts'])
+consumer.subscribe(['dbserver1.bank.users', 'dbserver1.bank.accounts', 'dbserver1.bank.infouser'])
 
 
 def decode_timestamp(encoded_timestamp):
@@ -55,6 +55,21 @@ def process_event(event_data, mongo_collection):
             'lastname': user_data['lastname'],
             'createdAt': decode_timestamp(user_data['createdat']).isoformat()
         }
+        
+    if source_table == 'infouser' and event_data['payload']['op'] == 'c': # 'c' indicates an insertion operation
+        print("new message user insert: :)")
+        # Store the user data in the state dictionary
+        user_infodata = event_data['payload']['after']
+        user_id = user_infodata['user_id']
+        
+        if user_id in user_states:
+            user_states[user_id] = {
+                **user_states[user_id],
+                'phone': user_infodata['phone'],
+                'address': user_infodata['address'],
+                'country': user_infodata['country'],
+                'city': user_infodata['city']
+            }
         
     # Check if it's an account creation event
     elif source_table == 'accounts' and event_data['payload']['op'] == 'c':

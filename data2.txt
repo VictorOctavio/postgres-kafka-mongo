@@ -1,0 +1,42 @@
+-- Crear tabla 'users'
+CREATE TABLE bank.users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+   	createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear tabla 'accounts'
+CREATE TABLE bank.accounts (
+    id SERIAL PRIMARY KEY,
+    amount DECIMAL(10, 2) NOT NULL,
+    user_id INT,
+    FOREIGN KEY (userid) REFERENCES users(id)
+);
+CREATE TABLE bank.infouser (
+    id SERIAL PRIMARY KEY,
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    city VARCHAR(100),
+    country VARCHAR(100),
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES bank.users(id)
+);
+INSERT INTO bank.users(
+	id, name, lastname, createdat, accountactive)
+	VALUES (17, 'xavi', 'alonso', current_timestamp, false);
+
+INSERT INTO bank.accounts(
+	id, amount, user_id)
+	VALUES (17,125000, 15);
+	
+-- 15 villa  125000
+-- 16 andres iniesta 90000
+-- 17 xavi alonso 115000
+
+SELECT *
+	FROM bank.accounts;
+	
+SELECT *
+	FROM bank.users;
+	
