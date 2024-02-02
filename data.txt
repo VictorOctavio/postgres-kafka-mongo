@@ -11,6 +11,12 @@ CREATE TABLE public.users (
     dni VARCHAR(20) UNIQUE NOT NULL
 );
 
+CREATE TABLE public.autos (
+    id SERIAL PRIMARY KEY,
+    marca VARCHAR(50) NOT NULL,
+    modelo VARCHAR(50) NOT NULL,
+    usuario_id INTEGER REFERENCES public.users(id) ON DELETE CASCADE
+);
 INSERT INTO public.users (nombre, email, dni) VALUES
     ('Lionel Messi', 'messi@example.com', '123456789'),
     ('Cristiano Ronaldo', 'ronaldo@example.com', '987654321'),
@@ -20,12 +26,6 @@ INSERT INTO public.users (nombre, email, dni) VALUES
 	
 SELECT * FROM public.users;
 
-CREATE TABLE public.autos (
-    id SERIAL PRIMARY KEY,
-    marca VARCHAR(50) NOT NULL,
-    modelo VARCHAR(50) NOT NULL,
-    usuario_id INTEGER REFERENCES public.users(id) ON DELETE CASCADE
-);
 
 -- Insertar autos de prueba
 INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
@@ -38,3 +38,21 @@ INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
     ('Volkswagen', 'Jetta', 7);
 	
 SELECT * FROM public.autos;
+
+
+-- Crear tabla 'users'
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    dni VARCHAR(15) NOT NULL
+);
+
+-- Crear tabla 'accounts'
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
+    amount DECIMAL(10, 2) NOT NULL,
+    userid INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userid) REFERENCES users(id)
+);

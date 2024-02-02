@@ -1,0 +1,177 @@
+version: '3'
+
+services:
+    postgres:
+      image: debezium/example-postgres:1.9
+      container_name: postgres
+      ports:
+      - 5433:5432
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - PGDATA=/var/lib/postgresql/data/pgdata
+        - POSTGRES_HOST_AUTH_METHOD="trust"
+      volumes:
+        - postgres13_data:/var/lib/postgresql/data
+        - postgres13_logs:/var/log/postgresql
+      networks:
+        - mynetwork
+
+    zookeeper:
+      image: wurstmeister/zookeeper:latest
+      environment:
+        ZOOKEEPER_CLIENT_PORT: 2181
+        ZOOKEEPER_TICK_TIME: 2000
+      ports:
+        - 2181:2181
+      volumes:
+        - zookeeper_data:/zookeeper/data
+        - zookeeper_txns:/zookeeper/txns
+        - zookeeper_logs:/zookeeper/logs
+      networks:
+        - mynetwork
+          
+    kafka:
+      image: wurstmeister/kafka:latest
+      restart: "no"
+      links:
+        - zookeeper
+      ports:
+        - 9092:9092
+      environment:
+        KAFKA_BROKER_ID: 1
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+        KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092
+        KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+        KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      volumes:
+        - kafka_data:/kafka/data
+        - kafka_logs:/kafka/logs
+        - kafka_conf:/kafka/config
+      networks:
+        - mynetwork
+
+    debezium:
+      image: debezium/connect:1.9
+      ports:
+        - 8083:8083
+      environment:
+        CONFIG_STORAGE_TOPIC: my_connect_configs
+        OFFSET_STORAGE_TOPIC: my_connect_offsets
+        STATUS_STORAGE_TOPIC: my_connect_statuses
+        BOOTSTRAP_SERVERS: kafka:29092
+      depends_on:
+        - kafka
+        - zookeeper
+        - postgres  
+      volumes:
+        - debezium_conf:/kafka/config
+        - debezium_logs:/debezium/logs
+      networks:
+        - mynetwork
+
+    kafdrop:
+      image: obsidiandynamics/kafdrop
+      restart: "no"
+      environment:
+        KAFKA_BROKERCONNECT: "kafka:29092"
+      ports:
+        - 9000:9000
+      depends_on:
+        - kafka
+      networks:
+        - mynetwork    
+
+    debezium-ui:
+      image: debezium/debezium-ui:2.4
+      depends_on:
+        - debezium
+      container_name: debezium_ui
+      restart: always
+      ports:
+        - "8081:8080"
+      environment:
+        - KAFKA_CONNECT_URIS=http://debezium:8083
+      networks:
+        - mynetwork
+            
+networks:
+  mynetwork:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: mynetwork
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.bridge.enable_icc: "true"
+
+volumes:
+  postgres13_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/postgresql/data
+
+  postgres13_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/postgresql
+
+  zookeeper_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /zookeeper/data
+
+  zookeeper_txns:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /zookeeper/txns
+
+  zookeeper_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /zookeeper/logs
+
+  kafka_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /kafka/data
+
+  kafka_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /kafka/logs
+
+  kafka_conf:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /kafka/config
+
+  debezium_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /debezium/logs
+
+  debezium_conf:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /debezium/config
