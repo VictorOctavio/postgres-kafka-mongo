@@ -1,4 +1,4 @@
--- Crear tabla 'users'
+-- Crear tabla bank.users
 CREATE TABLE bank.users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -6,13 +6,14 @@ CREATE TABLE bank.users (
    	createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crear tabla 'accounts'
+-- Crear tabla bank.accounts
 CREATE TABLE bank.accounts (
     id SERIAL PRIMARY KEY,
     amount DECIMAL(10, 2) NOT NULL,
     user_id INT,
-    FOREIGN KEY (userid) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES bank.users(id)
 );
+
 CREATE TABLE bank.infouser (
     id SERIAL PRIMARY KEY,
     phone VARCHAR(20),
@@ -22,6 +23,7 @@ CREATE TABLE bank.infouser (
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES bank.users(id)
 );
+
 INSERT INTO bank.users(
 	id, name, lastname, createdat, accountactive)
 	VALUES (17, 'xavi', 'alonso', current_timestamp, false);
