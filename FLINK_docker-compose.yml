@@ -44,7 +44,7 @@ services:
       environment:
         - JOB_MANAGER_RPC_ADDRESS=jobmanager
       volumes:
-        - jobmanager_data:/data
+        - jobmanager_data:/opt/flink
       networks:
         - mynetwork
         
@@ -63,7 +63,9 @@ services:
       environment:
         - JOB_MANAGER_RPC_ADDRESS=jobmanager
       volumes:
-        - taskmanager_data:/data
+        - taskmanager_data:/opt/flink
+      networks:
+        - mynetwork
           
     kafka:
       image: wurstmeister/kafka:latest
