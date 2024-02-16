@@ -1,0 +1,1 @@
+docker build --tag pyflink:1.17.2 .
