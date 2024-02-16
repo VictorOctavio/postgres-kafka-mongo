@@ -1,0 +1,36 @@
+- WINDOWS - Visual Studio:
+
+Invoke-WebRequest -Uri 'http://localhost:8083/connectors/' -Method Post -Headers @{
+    'Accept' = 'application/json'
+    'Content-Type' = 'application/json'
+} -InFile 'C:\Users\adria\Desktop\prueba\connector_post.json'
+
+
+
+- LINUX:
+
+    -Conectar OP 1:
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data @connector_post.json \
+  http://localhost:8083/connectors/
+
+
+    -Conectar OP 2:
+
+curl --header "Content-Type: application/json"   --request POST   --data @connector_post.json   http://localhost:8083/connectors/
+
+
+    -Actualizar el Conector
+
+curl --header "Content-Type: application/json"   --request PUT   --data @connector_post.json   http://localhost:8083/connectors/users-connector/config
+
+    - Detener el conector:
+    
+curl --request PUT http://localhost:8083/connectors/users-connector/pause
+
+
+    - Eliminar el conector:
+    
+curl --request DELETE http://localhost:8083/connectors/users-connector

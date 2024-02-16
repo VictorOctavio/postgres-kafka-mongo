@@ -1,0 +1,30 @@
+--PARA USAR CON "FLINK.PY" (Kafka->FLINK->Mongo)
+
+
+CREATE TABLE bank.users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+   	createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE bank.accounts (
+    id SERIAL PRIMARY KEY,
+    amount DECIMAL(10, 2) NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES bank.users(id)
+);
+
+CREATE TABLE bank.infouser (
+    id SERIAL PRIMARY KEY,
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    city VARCHAR(100),
+    country VARCHAR(100),
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES bank.users(id)
+);
+
+SELECT * FROM bank.users;
+SELECT * FROM bank.accounts;
+SELECT * FROM bank.infouser;

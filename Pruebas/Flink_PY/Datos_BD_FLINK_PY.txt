@@ -1,0 +1,71 @@
+-- PRUEBAS:
+
+
+
+--PARA USAR CON "KAFKA.PY" (Kafka->FLINK->Mongo)
+
+++ LOTES USERS ++
+
+
+INSERT INTO bank.users(id, name, lastname, createdat)
+	VALUES (1, 'hernan', 'martinez', current_timestamp);
+
+INSERT INTO bank.users(id, name, lastname, createdat)
+	VALUES (2, 'martin', 'martinez', current_timestamp);
+
+INSERT INTO bank.users(id, name, lastname, createdat)
+	VALUES (3, 'mario', 'benitez', current_timestamp);
+
+INSERT INTO bank.users(id, name, lastname, createdat)
+	VALUES (4, 'mario', 'castañeda', current_timestamp);
+	
+INSERT INTO bank.users(id, name, lastname, createdat) VALUES 
+    (5, 'María', 'González', current_timestamp),
+    (6, 'David', 'Rodríguez', current_timestamp),
+    (7, 'Laura', 'Martínez', current_timestamp),
+    (8, 'Pedro', 'Sánchez', current_timestamp),
+    (9, 'Sara', 'Pérez', current_timestamp),
+    (10, 'Javier', 'Díaz', current_timestamp),
+    (11, 'Elena', 'Ruiz', current_timestamp);
+    
+INSERT INTO bank.users(id, name, lastname, createdat) VALUES 
+    (12, 'Alejandro', 'Hernández', current_timestamp),
+    (13, 'Carmen', 'Torres', current_timestamp),
+    (14, 'Manuel', 'Jiménez', current_timestamp);
+
+INSERT INTO bank.users(id, name, lastname, createdat)
+	VALUES (15, 'villa', 'alonso', current_timestamp);
+	
+INSERT INTO bank.users(id, name, lastname, createdat)
+	VALUES (16, 'andres', 'iniesta', current_timestamp);
+	
+INSERT INTO bank.users(id, name, lastname, createdat)
+	VALUES (17, 'xavi', 'alonso', current_timestamp);
+	
+	
+
+++ LOTES ACCOUNTS ++
+
+INSERT INTO bank.accounts(id, amount, user_id)
+	VALUES (1,54000, 1);
+	
+INSERT INTO bank.accounts(id, amount, user_id)
+	VALUES (2,58000, 2);
+	
+INSERT INTO bank.accounts(id, amount, user_id)
+	VALUES (3,150000, 2);
+	
+INSERT INTO bank.accounts(id, amount, user_id)
+	VALUES (4,55400, 4);
+	
+	
+INSERT INTO bank.accounts(id, amount, user_id)
+	VALUES (5,54813, 5);
+	VALUES (6,753200, 6);
+	VALUES (7,85400, 7);
+	VALUES (8,45000, 8);
+	VALUES (9,46000, 9);
+	VALUES (10,75016, 10);
+	VALUES (11,8210455, 11);
+	
+

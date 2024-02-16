@@ -1,0 +1,173 @@
+-- PRUEBAS:
+
+
+
+--PARA USAR CON "CONSUMER.PY" (Kafka->Python->Mongo)
+
+++ LOTES USERS ++
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Lionel Messi', 'messi@example.com', '123456789'),
+    ('Cristiano Ronaldo', 'ronaldo@example.com', '987654321'),
+    ('Neymar Jr.', 'neymar@example.com', '456789123'),
+    ('Kylian Mbappé', 'mbappe@example.com', '789123456'),
+    ('Mohamed Salah', 'salah@example.com', '321654987'),
+    ('Lionel Scaloni', 'scaloni@example.com', '587423169'),
+    ('Anibal Pachano', 'pachano@example.com', '546123789');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Mirtha Legrand', 'mirtha@example.com', '3751587496'),
+    ('Usuario1', 'usuario1@email.com', '123456789A'),
+    ('Usuario2', 'usuario2@email.com', '987654321B'),
+    ('Usuario3', 'usuario3@email.com', '456789123C'),
+    ('Usuario4', 'usuario4@email.com', '321654987D'),
+    ('Usuario5', 'usuario5@email.com', '789123456E'),
+    ('Usuario6', 'usuario6@email.com', '654987321F'),
+    ('Usuario7', 'usuario7@email.com', '234567890G'),
+    ('Usuario8', 'usuario8@email.com', '890123456H'),
+    ('Usuario9', 'usuario9@email.com', '567890123I'),
+    ('Usuario10', 'usuario10@email.com', '012345678J');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario11', 'usuario11@email.com', '123456789K'),
+    ('Usuario12', 'usuario12@email.com', '987654321L'),
+    ('Usuario13', 'usuario13@email.com', '456789123M'),
+    ('Usuario14', 'usuario14@email.com', '321654987N'),
+    ('Usuario15', 'usuario15@email.com', '789123456O'),
+    ('Usuario16', 'usuario16@email.com', '654987321P'),
+    ('Usuario17', 'usuario17@email.com', '234567890Q'),
+    ('Usuario18', 'usuario18@email.com', '890123456R'),
+    ('Usuario19', 'usuario19@email.com', '567890123S'),
+    ('Usuario20', 'usuario20@email.com', '012345678T');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario31', 'usuario31@email.com', '123456789EE'),
+    ('Usuario32', 'usuario32@email.com', '987654321FF'),
+    ('Usuario33', 'usuario33@email.com', '456789123GG'),
+    ('Usuario34', 'usuario34@email.com', '321654987HH'),
+    ('Usuario35', 'usuario35@email.com', '789123456II'),
+    ('Usuario36', 'usuario36@email.com', '654987321JJ'),
+    ('Usuario37', 'usuario37@email.com', '234567890KK'),
+    ('Usuario38', 'usuario38@email.com', '890123456LL'),
+    ('Usuario39', 'usuario39@email.com', '567890123MM'),
+    ('Usuario40', 'usuario40@email.com', '012345678NN'),
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario201', 'usuario201@email.com', '123456789OO'),
+    ('Usuario202', 'usuario202@email.com', '987654321PP'),
+    ('Usuario203', 'usuario203@email.com', '456789123QQ'),
+    ('Usuario204', 'usuario204@email.com', '321654987RR'),
+    ('Usuario205', 'usuario205@email.com', '789123456SS'),
+    ('Usuario206', 'usuario206@email.com', '654987321TT'),
+    ('Usuario207', 'usuario207@email.com', '234567890UU'),
+    ('Usuario208', 'usuario208@email.com', '890123456VV'),
+    ('Usuario209', 'usuario209@email.com', '567890123WW'),
+    ('Usuario210', 'usuario210@email.com', '012345678XX');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario211', 'usuario211@email.com', '123456789YY'),
+    ('Usuario212', 'usuario212@email.com', '987654321ZZ'),
+    ('Usuario213', 'usuario213@email.com', '456789123AAA'),
+    ('Usuario214', 'usuario214@email.com', '321654987BBB'),
+    ('Usuario215', 'usuario215@email.com', '789123456CCC'),
+    ('Usuario216', 'usuario216@email.com', '654987321DDD'),
+    ('Usuario217', 'usuario217@email.com', '234567890EEE'),
+    ('Usuario218', 'usuario218@email.com', '890123456FFF'),
+    ('Usuario219', 'usuario219@email.com', '567890123GGG'),
+    ('Usuario220', 'usuario220@email.com', '012345678HHH');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario221', 'usuario221@email.com', '123456789III'),
+    ('Usuario222', 'usuario222@email.com', '987654321JJJ'),
+    ('Usuario223', 'usuario223@email.com', '456789123KKK'),
+    ('Usuario224', 'usuario224@email.com', '321654987LLL'),
+    ('Usuario225', 'usuario225@email.com', '789123456MMM'),
+    ('Usuario226', 'usuario226@email.com', '654987321NNN'),
+    ('Usuario227', 'usuario227@email.com', '234567890OOO'),
+    ('Usuario228', 'usuario228@email.com', '890123456PPP'),
+    ('Usuario229', 'usuario229@email.com', '567890123QQQ'),
+    ('Usuario230', 'usuario230@email.com', '012345678RRR');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario231', 'usuario231@email.com', '123456789SSS'),
+    ('Usuario232', 'usuario232@email.com', '987654321TTT'),
+    ('Usuario233', 'usuario233@email.com', '456789123UUU'),
+    ('Usuario234', 'usuario234@email.com', '321654987VVV'),
+    ('Usuario235', 'usuario235@email.com', '789123456WWW'),
+    ('Usuario236', 'usuario236@email.com', '654987321XXX'),
+    ('Usuario237', 'usuario237@email.com', '234567890YYY'),
+    ('Usuario238', 'usuario238@email.com', '890123456ZZZ'),
+    ('Usuario239', 'usuario239@email.com', '567890123AAA'),
+    ('Usuario240', 'usuario240@email.com', '012345678BBB');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario241', 'usuario241@email.com', '123456789CCC'),
+    ('Usuario242', 'usuario242@email.com', '987654321DDD'),
+    ('Usuario243', 'usuario243@email.com', '456789123EEE'),
+    ('Usuario244', 'usuario244@email.com', '321654987FFF'),
+    ('Usuario245', 'usuario245@email.com', '789123456GGG'),
+    ('Usuario246', 'usuario246@email.com', '654987321HHH'),
+    ('Usuario247', 'usuario247@email.com', '234567890III'),
+    ('Usuario248', 'usuario248@email.com', '890123456JJJ'),
+    ('Usuario249', 'usuario249@email.com', '567890123KKK'),
+    ('Usuario250', 'usuario250@email.com', '012345678LLL');
+
+INSERT INTO public.users (nombre, email, dni) VALUES
+    ('Usuario251', 'usuario251@email.com', '123456789MMM'),
+    ('Usuario252', 'usuario252@email.com', '987654321NNN'),
+    ('Usuario253', 'usuario253@email.com', '456789123OOO'),
+    ('Usuario254', 'usuario254@email.com', '321654987PPP'),
+    ('Usuario255', 'usuario255@email.com', '789123456QQQ'),
+    ('Usuario256', 'usuario256@email.com', '654987321RRR'),
+    ('Usuario257', 'usuario257@email.com', '234567890SSS'),
+    ('Usuario258', 'usuario258@email.com', '890123456TTT'),
+    ('Usuario259', 'usuario259@email.com', '567890123UUU'),
+    ('Usuario260', 'usuario260@email.com', '012345678VVV');
+
+
+++ LOTE AUTOS ++
+
+INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
+    ('Toyota', 'Corolla', 1),
+    ('Honda', 'Civic', 2),
+    ('Ford', 'Focus', 5),
+    ('Chevrolet', 'Malibu', 4),
+    ('Hyundai', 'Elantra', 6),
+    ('Audi', 'rs6', 6),
+    ('Volkswagen', 'Jetta', 7);
+
+INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
+    ('Toyota', 'RAV4', 11),
+    ('Honda', 'Accord', 12),
+    ('Ford', 'F-150', 13),
+    ('Chevrolet', 'Silverado', 14),
+    ('Volkswagen', 'Jetta', 15),
+    ('BMW', 'X5', 16),
+    ('Mercedes-Benz', 'E-Class', 17),
+    ('Audi', 'Q5', 18),
+    ('Tesla', 'Model 3', 19),
+    ('Hyundai', 'Tucson', 20);
+
+INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
+    ('Toyota', 'Camry', 21),
+    ('Honda', 'CR-V', 22),
+    ('Ford', 'Escape', 23),
+    ('Chevrolet', 'Equinox', 24),
+    ('Volkswagen', 'Tiguan', 25),
+    ('BMW', '3 Series', 26),
+    ('Mercedes-Benz', 'GLC', 27),
+    ('Audi', 'A3', 28),
+    ('Tesla', 'Model X', 29),
+    ('Hyundai', 'Santa Fe', 30);
+
+INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
+    ('Toyota', 'Highlander', 31),
+    ('Honda', 'Pilot', 32),
+    ('Ford', 'Explorer', 33),
+    ('Chevrolet', 'Traverse', 34),
+    ('Volkswagen', 'Atlas', 35),
+    ('BMW', '5 Series', 36),
+    ('Mercedes-Benz', 'S-Class', 37),
+    ('Audi', 'Q7', 38),
+    ('Tesla', 'Model Y', 39),
+    ('Hyundai', 'Kona', 40);
