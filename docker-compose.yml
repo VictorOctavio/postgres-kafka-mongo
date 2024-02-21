@@ -17,7 +17,7 @@ services:
         - mynetwork
         
     jobmanager:
-      image: pyflink:1.17.2
+      image: pyflink:1.18.1
       container_name: jobmanager
       restart: always
       expose:
@@ -40,12 +40,12 @@ services:
           web.backpressure.refresh-interval: 10000
       volumes:
         - pyflink_job:/opt/flink
-        - pyflink_src:/tmp/src
+        - ./src:/tmp/src
       networks:
         - mynetwork
         
     taskmanager:
-      image: pyflink:1.17.2
+      image: pyflink:1.18.1
       container_name: taskmanager
       restart: always
       expose:
@@ -71,7 +71,7 @@ services:
       volumes:
         - pyflink_task:/opt/flink
         - pyflink_data_0:/tmp/
-        - pyflink_src:/tmp/src
+        - ./src:/tmp/src
       networks:
         - mynetwork
 
@@ -82,13 +82,11 @@ services:
       environment:
         ZOO_PORT_NUMBER: 2181
         ZOO_TICK_TIME: 2000
-        ALLOW_ANONYMOUS_LOGIN: yes
+        ALLOW_ANONYMOUS_LOGIN: "yes"
       ports:
         - 2181:2181
       volumes:
-        - zookeeper_data:/zookeeper/data
-        - zookeeper_txns:/zookeeper/txns
-        - zookeeper_logs:/zookeeper/logs
+        - zookeeper_data:/bitnami
       networks:
         - mynetwork
 
@@ -109,9 +107,7 @@ services:
         KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
         KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
       volumes:
-        - kafka_data:/kafka/data
-        - kafka_logs:/kafka/logs
-        - kafka_conf:/kafka/config
+        - kafka_data:/bitnami
       networks:
         - mynetwork
 
@@ -147,7 +143,22 @@ services:
       depends_on:
         - kafka
       networks:
-        - mynetwork    
+        - mynetwork
+        
+    kafka-ui:
+      image: provectuslabs/kafka-ui:master
+      container_name: kafka-ui
+      ports:
+       - "8084:8080"
+      environment:
+        KAFKA_CLUSTERS_0_NAME: local
+        KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+        KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      depends_on:
+        - zookeeper
+        - kafka 
+      networks:
+        - mynetwork
 
     debezium-ui:
       image: debezium/debezium-ui:2.4
@@ -206,20 +217,8 @@ volumes:
     
   zookeeper_data:
     driver: local
-    
-  zookeeper_txns:
-    driver: local
-    
-  zookeeper_logs:
-    driver: local
 
   kafka_data:
-    driver: local
-
-  kafka_logs:
-    driver: local
-
-  kafka_conf:
     driver: local
 
   debezium_logs:
