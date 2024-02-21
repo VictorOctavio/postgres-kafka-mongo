@@ -1,12 +1,40 @@
+# Imagen Base de Flink
 FROM flink:1.18.1
 
-# install python3 and pip3
-RUN apt-get update -y && \
-apt-get install -y python3 python3-pip python3-dev && rm -rf /var/lib/apt/lists/*
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# Argumentos y Variables de Entorno
+ARG PYTHON_VERSION
+ENV PYTHON_VERSION=${PYTHON_VERSION:-3.10.11}
+ARG FLINK_VERSION
+ENV FLINK_VERSION=${FLINK_VERSION:-3.1.0-1.18}
 
-# install PyFlink
+# Descarga de JARs de conectores y Dependencias
+RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-kafka/$FLINK_VERSION/flink-connector-kafka-$FLINK_VERSION.jar; \
+  wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.6.1/kafka-clients-3.6.1.jar; \
+  wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka/$FLINK_VERSION/flink-sql-connector-kafka-$FLINK_VERSION.jar; \
+  wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-mongodb/1.1.0-1.18/flink-connector-mongodb-1.1.0-1.18.jar; \
+  wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-mongodb/1.1.0-1.18/flink-sql-connector-mongodb-1.1.0-1.18.jar; \
+  wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-python/1.18.1/flink-python-1.18.1.jar; \
+  wget -P /opt/flink/lib/ https://github.com/knaufk/flink-faker/releases/download/v0.5.3/flink-faker-0.5.3.jar;
+
+# Instalacion de dependencias de Python
+RUN apt-get update -y && \
+  apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libffi-dev liblzma-dev && \
+# Descarga e instalacion de Python3
+  wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && \
+  tar -xvf Python-${PYTHON_VERSION}.tgz && \
+  cd Python-${PYTHON_VERSION} && \
+  ./configure --without-tests --enable-shared && \
+  make -j6 && \
+  make install && \
+  ldconfig /usr/local/lib && \
+  cd .. && rm -f Python-${PYTHON_VERSION}.tgz && rm -rf Python-${PYTHON_VERSION} && \
+# Configuracion de Enlace simbolico para Python  
+  ln -s /usr/local/bin/python3 /usr/local/bin/python && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+# Instalación de PyFlink
 RUN pip3 install apache-flink==1.18.1
 
-# install google-cloud-bigquery-storage
+# Instalación de google-cloud-bigquery-storage
 RUN pip3 install google-cloud-bigquery-storage
