@@ -51,10 +51,7 @@ def configure_transform_udf():
 
 def configure_mongo_connector():
     # Obtener la puerta de enlace de Java para la ejecución de Flink
-    #gateway = JavaGateway.launch_gateway()
-	gateway = JavaGateway()
-    #alternativa
-    #gateway = get_gateway()
+    gateway = get_gateway()
 
     # Obtener una referencia a la tabla de entorno de transmisión (DataStreamTableEnvironment)
     table_env = StreamTableEnvironment.create(env)
