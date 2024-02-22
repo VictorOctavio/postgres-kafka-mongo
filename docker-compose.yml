@@ -23,7 +23,7 @@ services:
       expose:
         - "6123"
       ports:
-        - "8081:8081"
+        - "8087:8081"
       command: jobmanager
       environment:
         - BOOTSTRAP_SERVERS=kafka:29092
@@ -190,6 +190,7 @@ services:
             
 networks:
   mynetwork:
+    name: mynetwork
     driver: bridge
     driver_opts:
       com.docker.network.bridge.name: mynetwork

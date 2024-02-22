@@ -1,0 +1,13 @@
+# Network
+docker network ls
+docker inspect mynetwork
+docker network prune
+docker network rm <ID o nombre de la red>
+apt-get update && apt-get install -y telnet
+telnet host port
+
+# Contenedores
+docker exec -it nombre_contenedor /bin/bash
+docker exec jobmanager /opt/flink/bin/flink run --python /tmp/src/myscript.py
+docker cp tu_script.py jobmanager:/ruta/en/el/contenedor/tu_script.py
+docker exec -it jobmanager python /ruta/en/el/contenedor/tu_script.py
