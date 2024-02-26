@@ -88,7 +88,7 @@ if __name__ == "__main__":
     """
     ## cluster execution
     docker exec jobmanager /opt/flink/bin/flink run \
-        --python /tmp/src/prueba.py \
+        --python /tmp/src/prueba_2.py \
         -d
     """
 
