@@ -32,10 +32,12 @@ def convert_do_dict(data):
 
 # Función para combinar datos de usuarios y autos
 def combine_user_auto_data(user_data, auto_data):
-    user_id = user_data["payload"]["after"]["id"]
-    auto_id = auto_data["payload"]["after"]["userId"]
+    #user_id = user_data["payload"]["after"]["id"]
+    user_id = user_data.get("payload", {}).get("after", {}).get("id", None)
+    #auto_id = auto_data["payload"]["after"]["usuario_id"]
+    auto_id = auto_data.get("payload", {}).get("after", {}).get("usuario_id", None)
     if user_id == auto_id:
-        user_data["autos"] = user_data.get("autos", []) + [auto_data["payload"]["after"]]
+        user_data["autos"] = user_data.get("autos", []) + [auto_data["payload"]["after"]]        
     return user_data
 
 
@@ -49,38 +51,53 @@ class StatefulFunction(functions.MapFunction):
         self.state = runtime_context.get_state(state_descriptor)
 
     def map(self, value):
+        # ---------- DEFINIR CONEXION A MONGO ----------
+        client = MongoClient("mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority")
+        db = client["mongodb"]
+        collection = db["usuarios"]
+
         # Lógica para trabajar con el estado
         # Por ejemplo, guardar o actualizar el estado
-        user_id = value["payload"]["after"]["id"]
-        if self.state.value() is not None:
-            # Si el usuario existe en el estado, actualizar el estado
-            existing_state = self.state.value()
-            existing_state.update(value)
-            self.state.update(existing_state)
+        user_id = value.get("payload", {}).get("after", {}).get("id", None)
+        if user_id is not None:
+            if self.state.value() is not None:
+                # Si el usuario existe en el estado, actualizar el estado
+                existing_state = self.state.value()
+                existing_state.update(value)
+                self.state.update(existing_state)
             
-            # Actualizar el documento correspondiente en MongoDB
-            transformed_data = self.state.value()
-            transformed_data.update(value)
-            # ---------- DEFINIR CONEXION A MONGO ----------
-            client = MongoClient("mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority")
-            db = client["mongodb"]
-            collection = db["usuarios"]
-            collection.update_one({"_id": user_id}, {"$set": transformed_data}, upsert=True)
-        else:
-            # Si el usuario no existe, insertar un nuevo documento en MongoDB
-            transformed_data = {
-                "Nombre": value["payload"]["after"]["nombre"],
-                "email": value["payload"]["after"]["email"],
-                "dni": value["payload"]["after"]["dni"],
-                "autos": value.get("autos", [])
-            }
-            # ---------- DEFINIR CONEXION A MONGO ----------
-            client = MongoClient("mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority")
-            db = client["mongodb"]
-            collection = db["usuarios"]
-            collection.insert_one(transformed_data)
-            # Guardar el estado para el nuevo usuario
-            self.state.update(transformed_data)
+                # Actualizar el documento correspondiente en MongoDB
+                transformed_data = self.state.value()
+                transformed_data.update(value)
+                logging.info(transformed_data)
+                # Asegúrate de que el campo '_id' sea único y no se modifique
+                if "ID" in transformed_data:
+                    del transformed_data["ID"]
+                if "payload" in transformed_data:
+                    del transformed_data["payload"]
+                if "schema" in transformed_data:
+                    del transformed_data["schema"]
+                # ---------- INSERTAR DATOS ACTUALIZADOS EN MONGO ----------
+                collection.update_one({"ID": user_id}, {"$set": transformed_data}, upsert=True)
+            else:
+                # Si el usuario no existe, insertar un nuevo documento en MongoDB
+                transformed_data = {
+                    "ID": value.get("payload", {}).get("after", {}).get("id", None),
+                    "Nombre": value.get("payload", {}).get("after", {}).get("nombre", None),
+                    "email": value.get("payload", {}).get("after", {}).get("email", None),
+                    "dni": value.get("payload", {}).get("after", {}).get("dni", None),
+                    "autos": value.get("autos", [])
+                }
+    
+                if "payload" in transformed_data:
+                    del transformed_data["payload"]
+                if "schema" in transformed_data:
+                    del transformed_data["schema"]
+    
+                # ---------- INSERTAR DATOS EN MONGO ----------
+                collection.insert_one(transformed_data)
+                # Guardar el estado para el nuevo usuario
+                self.state.update(transformed_data)
 
 
     
@@ -111,6 +128,8 @@ if __name__ == "__main__":
     
     # Configurar el paralelismo del entorno (opcional)
     # env.set_parallelism(5)
+
+
     
     # ---------- DEFINIR FUENTES DE KAFKA ----------
 
@@ -134,9 +153,6 @@ if __name__ == "__main__":
         .set_value_only_deserializer(SimpleStringSchema())
         .build()
     )
-    
-    
-    
     
     
     
@@ -164,22 +180,25 @@ if __name__ == "__main__":
     combined_stream = ks_users_dict.union(ks_autos_dict)
     
     
-    
+
     # ---------- PROCESOS DE COMBINACION DE LOS DATOS COMBINADOS ----------
 
     # Aplicar la función de combinación a los datos combinados
     combined_data_stream = combined_stream.key_by(lambda x: x["payload"]["after"]["id"]).reduce(combine_user_auto_data)
     
     
-    
+
     # ---------- PROCESOS DE MANEJO DE ESTADOS DE LOS DATOS E INSERCION/ACTUALIZACION DE LOS DATOS EN MONGO ----------
-    
+
+
+    combined_data_stream = combined_data_stream.key_by(lambda x: x["payload"]["after"]["id"])
+
+
     # Aplicar la función de estado a los datos combinados
     combined_data_stream.map(StatefulFunction(), output_type=None)
     
-    
-    
+
+
     # ---------- EJECUCION DE LA TAREA ----------
 
     env.execute("kafka_to_mongo")
-
