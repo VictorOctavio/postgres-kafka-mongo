@@ -31,22 +31,30 @@ services:
         - |
           FLINK_PROPERTIES=
           jobmanager.rpc.address: jobmanager
-          state.backend: filesystem
-          state.checkpoints.dir: file:///tmp/flink-checkpoints
-          state.savepoints.dir: file:///tmp/flink-savepoints
+          jobmanager.memory.process.size: 1024m
+          taskmanager.memory.process.size: 4096m
+          taskmanager.numberOfTaskSlots: 10
+          state.backend: rocksdb
+          state.backend.incremental: true
+          state.checkpoints.dir: file:///tmp/src/checkpoints
+          state.savepoints.dir: file:///tmp/src/savepoints
+          state.backend.rocksdb.localdir: /tmp/src/rocksdb
+          state.checkpoints.interval: 60000
+          state.checkpoints.externalized-checkpoint-retention: 10
+          state.checkpoints.externalized-checkpoint-cleanup: true
           heartbeat.interval: 1000
           heartbeat.timeout: 5000
           rest.flamegraph.enabled: true
-          web.backpressure.refresh-interval: 10000
+          web.backpressure.refresh-interval: 5000
       volumes:
         - pyflink_job:/opt/flink
         - ./src:/tmp/src
       networks:
         - mynetwork
         
-    taskmanager:
+    taskmanager-0:
       image: pyflink:1.18.1
-      container_name: taskmanager
+      container_name: taskmanager-0
       restart: always
       expose:
         - "6121"
@@ -62,15 +70,21 @@ services:
         - |
           FLINK_PROPERTIES=
           jobmanager.rpc.address: jobmanager
+          jobmanager.memory.process.size: 1024m
+          taskmanager.memory.process.size: 4096m
           taskmanager.numberOfTaskSlots: 5
-          state.backend: filesystem
-          state.checkpoints.dir: file:///tmp/flink-checkpoints
-          state.savepoints.dir: file:///tmp/flink-savepoints
+          state.backend: rocksdb
+          state.backend.incremental: true
+          state.checkpoints.dir: file:///tmp/src/checkpoints
+          state.savepoints.dir: file:///tmp/src/savepoints
+          state.backend.rocksdb.localdir: /tmp/src/rocksdb
+          state.checkpoints.interval: 60000
+          state.checkpoints.externalized-checkpoint-retention: 10
+          state.checkpoints.externalized-checkpoint-cleanup: true
           heartbeat.interval: 1000
           heartbeat.timeout: 5000
       volumes:
         - pyflink_task:/opt/flink
-        - pyflink_data_0:/tmp/
         - ./src:/tmp/src
       networks:
         - mynetwork
@@ -86,7 +100,7 @@ services:
       ports:
         - 2181:2181
       volumes:
-        - zookeeper_data:/bitnami
+        - zookeeper_data:/opt/bitnami
       networks:
         - mynetwork
 
@@ -107,7 +121,7 @@ services:
         KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
         KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
       volumes:
-        - kafka_data:/bitnami
+        - kafka_data:/opt/bitnami
       networks:
         - mynetwork
 
@@ -143,22 +157,7 @@ services:
       depends_on:
         - kafka
       networks:
-        - mynetwork
-        
-    kafka-ui:
-      image: provectuslabs/kafka-ui:master
-      container_name: kafka-ui
-      ports:
-       - "8084:8080"
-      environment:
-        KAFKA_CLUSTERS_0_NAME: local
-        KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
-        KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
-      depends_on:
-        - zookeeper
-        - kafka 
-      networks:
-        - mynetwork
+        - mynetwork    
 
     debezium-ui:
       image: debezium/debezium-ui:2.4
@@ -210,9 +209,6 @@ volumes:
     driver: local
 
   pyflink_src:
-    driver: local
-
-  pyflink_data_0:
     driver: local
     
   zookeeper_data:
