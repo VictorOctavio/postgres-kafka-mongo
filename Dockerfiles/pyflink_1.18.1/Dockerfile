@@ -14,8 +14,8 @@ RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flin
   wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-mongodb/1.1.0-1.18/flink-connector-mongodb-1.1.0-1.18.jar; \
   wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-mongodb/1.1.0-1.18/flink-sql-connector-mongodb-1.1.0-1.18.jar; \
   wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/3.12.14/mongo-java-driver-3.12.14.jar; \
-  wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/mongoflink/mongo-flink/0.3/mongo-flink-0.3.jar; \
   wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-python/1.18.1/flink-python-1.18.1.jar; \
+  wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-statebackend-rocksdb/1.18.1/flink-statebackend-rocksdb-1.18.1.jar; \
   wget -P /opt/flink/lib/ https://github.com/knaufk/flink-faker/releases/download/v0.5.3/flink-faker-0.5.3.jar;
 
 # Instalacion de dependencias de Python
