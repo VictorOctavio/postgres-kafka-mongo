@@ -5,19 +5,21 @@
 --PARA USAR CON "CONSUMER.PY" (Kafka->Python->Mongo)
 
 
-CREATE TABLE public.users (
+CREATE TABLE prueba.personas (
     id SERIAL PRIMARY KEY,
+    dni VARCHAR(20) UNIQUE NOT null,
     nombre VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    dni VARCHAR(20) UNIQUE NOT NULL
+    apellido VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE public.autos (
+CREATE TABLE prueba.autos (
     id SERIAL PRIMARY KEY,
     marca VARCHAR(50) NOT NULL,
     modelo VARCHAR(50) NOT NULL,
-    usuario_id INTEGER REFERENCES public.users(id) ON DELETE CASCADE
+    patente VARCHAR(50) not null,
+    id_persona INTEGER REFERENCES prueba.personas(id) ON DELETE CASCADE
 );
 
-SELECT * FROM public.users;
-SELECT * FROM public.autos;
+select * from prueba.personas
+select * from prueba.autos

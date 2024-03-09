@@ -3,7 +3,7 @@
 Invoke-WebRequest -Uri 'http://localhost:8083/connectors/' -Method Post -Headers @{
     'Accept' = 'application/json'
     'Content-Type' = 'application/json'
-} -InFile 'C:\Users\adria\Desktop\prueba\connector_post.json'
+} -InFile 'D:\Adrian\Datos\postgres-kafka-mongo\ConnectorDebezium\connector_post.json'
 
 
 

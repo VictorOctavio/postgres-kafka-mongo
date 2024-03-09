@@ -7,9 +7,11 @@
         "database.user": "postgres",
         "database.password": "postgres",
         "database.dbname" : "postgres",
+        "slot.drop.on.stop": true,
+        "slot.retry.delay.ms": 86400000,
         "database.server.name": "dbserver1",
-        "schema.include.list": "public, bank",
-        "table.include.list": "public.users, public.autos, bank.users, bank.accounts, bank.infouser",
+        "schema.include.list": "prueba",
+        "table.include.list": "prueba.personas, prueba.autos",
         "topic.prefix": "dbserver",
         "slot.name": "soltid_1",
         "plugin.name": "pgoutput"
