@@ -27,51 +27,42 @@ def convert_do_dict(data):
     return json.loads(data)
 
 
-def define_workflow(kafka_stream_persona, kafka_stream_autos):
-    # Fusionar los flujos de Kafka para trabajar con ambos
-    merged_stream = kafka_stream_persona.union(kafka_stream_autos)
-
-    # Realizar cualquier transformación adicional que necesites antes de enviar los datos a MongoDB.
-    # Por ahora, simplemente pasaremos los datos tal como vienen.
-    return merged_stream
-
-
 def insert_to_mongo(data, tabla):
     # Convertir la cadena de texto a un diccionario de Python
     data_dict = convert_do_dict(data)
 
-    # Campos comunes para ambas fuentes
-    common_fields = {
-        "Data": data,
-        "Fecha_Alta": datetime.utcnow(),
-        "Tabla": tabla
-    }
-
     # Extraer y renombrar los campos deseados según la fuente (Persona o Autos)
     if tabla == "Persona":
         transformed_data = {
-            "DNI": data_dict["payload"]["after"]["dni"],
-            "Nombre": data_dict["payload"]["after"]["nombre"],
-            "Apellido": data_dict["payload"]["after"]["apellido"],
-            "Email": data_dict["payload"]["after"]["email"]
+            "Data": {
+                "DNI": data_dict["payload"]["after"]["dni"],
+                "Nombre": data_dict["payload"]["after"]["nombre"],
+                "Apellido": data_dict["payload"]["after"]["apellido"],
+                "Email": data_dict["payload"]["after"]["email"]
+            }
         }
     elif tabla == "Autos":
         transformed_data = {
-            "Marca": data_dict["payload"]["after"]["marca"],
-            "Modelo": data_dict["payload"]["after"]["modelo"],
-            "Patente": data_dict["payload"]["after"]["patente"],
-            "ID_Persona": data_dict["payload"]["after"]["id_persona"]
+            "Data": {
+                "Marca": data_dict["payload"]["after"]["marca"],
+                "Modelo": data_dict["payload"]["after"]["modelo"],
+                "Patente": data_dict["payload"]["after"]["patente"],
+                "ID_Persona": data_dict["payload"]["after"]["id_persona"]
+            }
         }
     else:
         # Si la tabla no es reconocida, no se realiza ninguna transformación
         return
 
-    # Combinar los campos comunes y los específicos de cada fuente
-    transformed_data.update(common_fields)
+    # Agregar campos adicionales
+    transformed_data.update({
+        "Fecha_Alta": datetime.now(),
+        "Tabla": tabla
+    })
 
     # Función para insertar datos en MongoDB
     #client = MongoClient("mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority")
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient("mongodb://192.168.200.8:27017/")
     db = client["interbase_mngdb"]
     collection = db["test_flink_total"]
     collection.insert_one(transformed_data)
@@ -159,11 +150,23 @@ if __name__ == "__main__":
     )
     
     
-    # ---------- PROCESOS DE TRANSFORMACION Y UNION DE DATOS ----------
+    # ---------- PROCESO UNION DE FLUJO DE DATOS ----------
 
-    # Aquí definimos el flujo de trabajo para consumir de Kafka y pasar los datos a MongoDB
-    define_workflow(kafka_stream_persona, kafka_stream_autos).map(
-        lambda d, tabla: insert_to_mongo(d, tabla), output_type=None
+
+    combined_stream = kafka_stream_persona.union(kafka_stream_autos)
+
+
+    # ---------- FLUJO DE TRABAJO PRINCIPAL ----------
+
+
+    # Definir el flujo de trabajo para consumir de Kafka y pasar los datos de persona a MongoDB
+    kafka_stream_persona.map(
+        lambda d: insert_to_mongo(d, "Persona"), output_type=None
+    )
+
+    # Definir el flujo de trabajo para consumir de Kafka y pasar los datos de autos a MongoDB
+    kafka_stream_autos.map(
+        lambda d: insert_to_mongo(d, "Autos"), output_type=None
     )
     
 
