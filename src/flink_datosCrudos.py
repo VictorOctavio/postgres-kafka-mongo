@@ -94,7 +94,7 @@ if __name__ == "__main__":
         
     ## Iniciar Job desde CheckPoint
     docker exec jobmanager /opt/flink/bin/flink run \
-        -s file:///tmp/src/checkpoint/[FolderChakePoint]/[chk-id] \
+        -s file:///tmp/src/checkpoints/[FolderChakePoint]/[chk-id] \
         --python /tmp/src/flink_datosCrudos.py \
         -d
     """

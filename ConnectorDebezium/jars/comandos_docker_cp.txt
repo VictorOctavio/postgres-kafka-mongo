@@ -1,0 +1,13 @@
+--Los JARS deben ser copiados al contenedor docker para poder realizar el filtro de mensajes en caso de ser necesario
+
+COMANDOS:
+
+1. "docker ps" para obtener el ID actual del Contenedor de Debezium
+
+2. "docker cp C:\[rutaAlaCarpeta]\postgres-kafka-mongo\ConnectorDebezium\jars\debezium-scripting-2.5.2.Final.jar [IDContenedor]:/kafka/connect/debezium-connector-postgres/"
+
+EJEMPLO:
+
+docker cp D:\Datos\postgres-kafka-mongo\ConnectorDebezium\jars\debezium-scripting-2.5.2.Final.jar fc2ca25cae33:/kafka/connect/debezium-connector-postgres/
+
+3. Repetir para todos los JARS el proceso

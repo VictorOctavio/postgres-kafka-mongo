@@ -1,0 +1,27 @@
+{ 
+    "name": "users-connector", 
+    "config": { 
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "database.hostname": "postgres",
+        "database.port": "5432",
+        "database.user": "postgres",
+        "database.password": "postgres",
+        "database.dbname" : "postgres",
+        "database.server.name": "dbserver1",
+        "schema.include.list": "prueba",
+        "table.include.list": "prueba.personas, prueba.autos",
+        "topic.prefix": "dbserver",
+        "slot.name": "soltid_1",
+        "slot.drop.on.stop": true,
+        "slot.retry.delay.ms": 86400000,
+        "plugin.name": "pgoutput",
+        "delete.handling.mode": "none", // Evitar captura de acciones de Delete
+        "tombstones.on.delete": false, // Evitar capturas vacías
+        "event.deserialization.failure.handling.mode": "fail", // Fallar en caso de error de deserialización
+
+        "transforms": "filterDelete", // Habilitar el transformador personalizado
+        "transforms.filterDelete.type": "io.debezium.transforms.Filter", // Tipo de transformador
+        "transforms.filterDelete.language": "js", // Lenguaje del transformador
+        "transforms.filterDelete.condition": "value.op != 'd'" // Condición para filtrar eventos de eliminación
+    } 
+}

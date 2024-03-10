@@ -7,13 +7,20 @@
         "database.user": "postgres",
         "database.password": "postgres",
         "database.dbname" : "postgres",
-        "slot.drop.on.stop": true,
-        "slot.retry.delay.ms": 86400000,
         "database.server.name": "dbserver1",
         "schema.include.list": "prueba",
         "table.include.list": "prueba.personas, prueba.autos",
         "topic.prefix": "dbserver",
         "slot.name": "soltid_1",
-        "plugin.name": "pgoutput"
+        "slot.drop.on.stop": true,
+        "slot.retry.delay.ms": 86400000,
+        "plugin.name": "pgoutput",
+        "delete.handling.mode": "none",
+        "tombstones.on.delete": false,
+        "event.deserialization.failure.handling.mode": "fail",
+        "transforms": "filter",
+        "transforms.filter.type": "io.debezium.transforms.Filter",
+        "transforms.filter.language": "jsr223.groovy",
+        "transforms.filter.condition": "value.op != 'd'"
     } 
 }

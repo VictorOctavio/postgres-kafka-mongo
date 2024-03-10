@@ -143,6 +143,7 @@ services:
       volumes:
         - debezium_conf:/kafka/config
         - debezium_logs:/kafka/logs
+        - debezium_connect:/kafka/connect
       networks:
         - mynetwork
 
@@ -221,6 +222,9 @@ volumes:
     driver: local
 
   debezium_conf:
+    driver: local
+
+  debezium_connect:
     driver: local
       
   pgadmin_servers:
