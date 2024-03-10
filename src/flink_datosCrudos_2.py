@@ -157,12 +157,24 @@ if __name__ == "__main__":
         kafka_prueba_autos, WatermarkStrategy.no_watermarks(), "kafka_prueba_autos"
     )
 
+    # ---------- INICIALIZAR EL ESTADO ----------
+
+    state_descriptor = ValueStateDescriptor(
+        "persona_state", Types.MAP(Types.STRING(), Types.MAP(Types.STRING(), Types.STRING()))
+    )
+    env.add_state_descriptor(state_descriptor)
+
     # ---------- FLUJO DE TRABAJO PRINCIPAL ----------
 
 
     # Definir el flujo de trabajo para consumir de Kafka y pasar los datos de persona a MongoDB
-    kafka_stream_persona.map(
+    """ kafka_stream_persona.map(
         lambda d: insert_to_mongo(d, "Persona"), output_type=None
+    ) """
+
+    # Definir el flujo de trabajo para consumir de Kafka y pasar los datos de persona a MongoDB
+    kafka_stream_persona.map(
+        lambda d: process_data_with_state(d, persona_state, "Persona"), output_type=None
     )
 
     # Definir el flujo de trabajo para consumir de Kafka y pasar los datos de autos a MongoDB

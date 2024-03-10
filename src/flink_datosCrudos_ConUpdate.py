@@ -11,7 +11,8 @@ from pyflink.datastream import (
     StreamExecutionEnvironment, 
     RuntimeExecutionMode, 
     functions, 
-    ExternalizedCheckpointCleanup
+    ExternalizedCheckpointCleanup,
+    EmbeddedRocksDBStateBackend
 )
 from pyflink.datastream.connectors.kafka import (
     KafkaSource,
@@ -22,6 +23,7 @@ from pyflink.datastream.connectors.kafka import (
 )
 from pyflink.datastream.formats.json import JsonRowSerializationSchema, JsonRowDeserializationSchema
 from pyflink.datastream.state import ValueStateDescriptor
+from pyflink.datastream.functions import RuntimeContext
 from pymongo import MongoClient
 
 # Variables de Entorno
@@ -74,11 +76,52 @@ def insert_to_mongo(data, tabla):
     collection.insert_one(transformed_data)
 
 
+def update_mongo_and_state(data, tabla, state):
+    # Convertir la cadena de texto a un diccionario de Python
+    data_dict = convert_do_dict(data)
+
+    # Obtener el ID del dato
+    data_id = data_dict["payload"]["after"]["id"]
+
+    # Obtener el estado actual para el ID
+    current_state = state.value()
+    
+    if current_state is not None and data_id in current_state:
+        # Si el ID ya existe en el estado, actualizar el estado y MongoDB
+        current_state[data_id].update(data_dict["payload"]["after"])
+        state.update(current_state)
+        update_mongo_document(tabla, data_id, current_state[data_id])
+    else:
+        # Si el ID no existe en el estado, guardar el estado y insertar en MongoDB
+        current_state[data_id] = data_dict["payload"]["after"]
+        state.update(current_state)
+        insert_to_mongo(data, tabla)
+
+
+def update_mongo_document(tabla, data_id, updated_data):
+    # Convertir la cadena de texto a un diccionario de Python
+    updated_data_dict = convert_do_dict(updated_data)
+
+    # Crear un filtro para encontrar el documento correspondiente en MongoDB
+    filter_condition = {"Data.ID": data_id}
+
+    # Crear una actualización con los nuevos datos
+    update_data = {"$set": updated_data_dict}
+
+    # Conectar a MongoDB y actualizar el documento
+    client = MongoClient("mongodb://192.168.200.8:27017/")
+    db = client["interbase_mngdb"]
+    collection = db["test_flink_total"]
+
+    # Actualizar el documento en la colección correspondiente
+    collection.update_one(filter_condition, update_data)
+
+
 if __name__ == "__main__":
     """
     ## cluster execution
     docker exec jobmanager /opt/flink/bin/flink run \
-        --python /tmp/src/flink_datosCrudos.py \
+        --python /tmp/src/flink_datosCrudos_ConUpdate.py \
         -d
         
     ## Deter y guardar SavePoint
@@ -89,13 +132,13 @@ if __name__ == "__main__":
     ## Iniciar Job desde SavePoint
     docker exec jobmanager /opt/flink/bin/flink run \
         -s file:///tmp/src/savepoints/[FolderSavePoint] \
-        --python /tmp/src/flink_datosCrudos.py \
+        --python /tmp/src/flink_datosCrudos_ConUpdate.py \
         -d
         
     ## Iniciar Job desde CheckPoint
     docker exec jobmanager /opt/flink/bin/flink run \
         -s file:///tmp/src/checkpoint/[FolderChakePoint]/[chk-id] \
-        --python /tmp/src/flink_datosCrudos.py \
+        --python /tmp/src/flink_datosCrudos_ConUpdate.py \
         -d
     """
 
@@ -119,9 +162,12 @@ if __name__ == "__main__":
     # Configurar el paralelismo del entorno (opcional)
     # env.set_parallelism(5)
 
+    # Configuracion StateBackend
+    env.set_state_backend(EmbeddedRocksDBStateBackend())
+
     # Configurar manejo de CheckPoints
-    env.get_checkpoint_config().enable_externalized_checkpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
-    env.get_checkpoint_config().set_checkpoint_interval(60000)
+    #env.get_checkpoint_config().enable_externalized_checkpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
+    #env.get_checkpoint_config().set_checkpoint_interval(60000)
     
     # ---------- DEFINIR FUENTES DE KAFKA ----------
 
@@ -160,17 +206,33 @@ if __name__ == "__main__":
     # ---------- FLUJO DE TRABAJO PRINCIPAL ----------
 
 
+    # Definir los descriptores de estado para Persona y Autos
+    persona_state_descriptor = ValueStateDescriptor(
+        "persona_state", Types.STRING()
+    )
+    autos_state_descriptor = ValueStateDescriptor(
+        "autos_state", Types.MAP(Types.STRING(), Types.MAP(Types.STRING(), Types.STRING()))
+    )
+
+    # Obtener el estado gestionado por Flink
+    persona_state = RuntimeContext.get_state(persona_state_descriptor)
+    autos_state = RuntimeContext.get_state(self="autos_state", state_descriptor=autos_state_descriptor)
+
+    persona_state.value()
+    autos_state.value()
+
     # Definir el flujo de trabajo para consumir de Kafka y pasar los datos de persona a MongoDB
     kafka_stream_persona.map(
-        lambda d: insert_to_mongo(d, "Persona"), output_type=None
+        lambda d: update_mongo_and_state(d, "Persona", persona_state_descriptor),
+        output_type=None
     )
 
     # Definir el flujo de trabajo para consumir de Kafka y pasar los datos de autos a MongoDB
     kafka_stream_autos.map(
-        lambda d: insert_to_mongo(d, "Autos"), output_type=None
+        lambda d: update_mongo_and_state(d, "Autos", autos_state_descriptor),
+        output_type=None
     )
     
-
 
     # ---------- EJECUCION DE LA TAREA ----------
 

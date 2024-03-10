@@ -60,7 +60,7 @@ def insertar_datos(cantidad=None):
                 marca, modelo, patente, _ = generar_auto(id_persona)
                 cur.execute("INSERT INTO prueba.autos (Marca, Modelo, Patente, id_Persona) VALUES (%s, %s, %s, %s)", (marca, modelo, patente, id_persona))
                 conn.commit()
-                time.sleep(1)  # Pausa de 1 segundo entre inserciones para simular flujo constante de datos
+                #time.sleep(1)  # Pausa de 1 segundo entre inserciones para simular flujo constante de datos
                 print("DATO INSERTADO")
     except Exception as e:
         print(f"Error: {e}")
