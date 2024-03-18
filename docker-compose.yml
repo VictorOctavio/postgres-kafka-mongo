@@ -15,6 +15,21 @@ services:
         - postgres13_logs:/var/log/postgresql
       networks:
         - mynetwork
+
+    #postgres8:
+    #  image:
+    #  container_name: postgresDB8.3
+    #  restart: always
+    #  ports:
+    #    -"5433:5432"
+    #  environment:
+    #      POSTGRES_USER: postgres
+    #      POSTGRES_PASSWORD: postgres
+    #  volumes:
+    #    - postgres8_data:/var/lib/postgresql/data
+    #    - postgres8_logs:/var/log/postgresql
+    #  networks:
+    #    - mynetwork
         
     jobmanager:
       image: pyflink:1.18.1
