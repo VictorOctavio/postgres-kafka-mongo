@@ -73,6 +73,7 @@ def insert_to_mongo(data, tabla):
 
     # Función para insertar datos en MongoDB
     #client = MongoClient("mongodb+srv://root:root@cluster.esryp20.mongodb.net/?retryWrites=true&w=majority")
+    #client = MongoClient("mongodb://192.168.200.8:27017/", serverSelectionTimeoutMS=50000)
     client = MongoClient("mongodb://192.168.200.8:27017/")
     db = client["interbase_mngdb"]
     collection = db["test_flink_total"]

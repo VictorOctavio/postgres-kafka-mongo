@@ -31,9 +31,10 @@ services:
         - |
           FLINK_PROPERTIES=
           jobmanager.rpc.address: jobmanager
-          jobmanager.memory.process.size: 1024m
-          taskmanager.memory.process.size: 4096m
-          taskmanager.numberOfTaskSlots: 10
+          jobmanager.memory.process.size: 4096m
+          taskmanager.memory.process.size: 8192m
+          taskmanager.memory.task.heap.size: 2560m
+          taskmanager.numberOfTaskSlots: 1
           state.backend: rocksdb
           state.backend.incremental: true
           state.checkpoints.dir: file:///tmp/src/checkpoints
@@ -70,9 +71,10 @@ services:
         - |
           FLINK_PROPERTIES=
           jobmanager.rpc.address: jobmanager
-          jobmanager.memory.process.size: 1024m
-          taskmanager.memory.process.size: 4096m
-          taskmanager.numberOfTaskSlots: 5
+          jobmanager.memory.process.size: 4096m
+          taskmanager.memory.process.size: 8192m
+          taskmanager.memory.task.heap.size: 2560m
+          taskmanager.numberOfTaskSlots: 1
           state.backend: rocksdb
           state.backend.incremental: true
           state.checkpoints.dir: file:///tmp/src/checkpoints

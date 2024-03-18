@@ -68,7 +68,7 @@ def insertar_datos(cantidad=None):
         cur.close()
         conn.close()
 
-insertar_datos()
+insertar_datos(2)
 # Ejemplo de uso
 # insertar_datos(10)  # Inserta 10 personas y 10 autos
 # insertar_datos()  # Inserta datos de forma constante hasta que se detenga el script
