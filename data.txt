@@ -1,40 +1,44 @@
-INSERT INTO inventory.customers(
-	id, first_name, last_name, email)
-	VALUES (14, 'juan roman', 'riquelme', 'roman@test.com');
-	
-SELECT * FROM inventory.customers;
-
-CREATE TABLE public.users (
+-- Crear tabla bank.users
+CREATE TABLE bank.users (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    dni VARCHAR(20) UNIQUE NOT NULL
+    name VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+   	createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO public.users (nombre, email, dni) VALUES
-    ('Lionel Messi', 'messi@example.com', '123456789'),
-    ('Cristiano Ronaldo', 'ronaldo@example.com', '987654321'),
-    ('Neymar Jr.', 'neymar@example.com', '456789123'),
-    ('Kylian Mbappé', 'mbappe@example.com', '789123456'),
-    ('Mohamed Salah', 'salah@example.com', '321654987');
-	
-SELECT * FROM public.users;
-
-CREATE TABLE public.autos (
+-- Crear tabla bank.accounts
+CREATE TABLE bank.accounts (
     id SERIAL PRIMARY KEY,
-    marca VARCHAR(50) NOT NULL,
-    modelo VARCHAR(50) NOT NULL,
-    usuario_id INTEGER REFERENCES public.users(id) ON DELETE CASCADE
+    amount DECIMAL(10, 2) NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES bank.users(id)
 );
 
--- Insertar autos de prueba
-INSERT INTO public.autos (marca, modelo, usuario_id) VALUES
-    ('Toyota', 'Corolla', 1),
-    ('Honda', 'Civic', 2),
-    ('Ford', 'Focus', 5),
-    ('Chevrolet', 'Malibu', 4),
-    ('Hyundai', 'Elantra', 6),
-    ('Audi', 'rs6', 6),
-    ('Volkswagen', 'Jetta', 7);
+CREATE TABLE bank.infouser (
+    id SERIAL PRIMARY KEY,
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    city VARCHAR(100),
+    country VARCHAR(100),
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES bank.users(id)
+);
+
+INSERT INTO bank.users(
+	id, name, lastname, createdat, accountactive)
+	VALUES (17, 'xavi', 'alonso', current_timestamp, false);
+
+INSERT INTO bank.accounts(
+	id, amount, user_id)
+	VALUES (17,125000, 15);
 	
-SELECT * FROM public.autos;
+-- 15 villa  125000
+-- 16 andres iniesta 90000
+-- 17 xavi alonso 115000
+
+SELECT *
+	FROM bank.accounts;
+	
+SELECT *
+	FROM bank.users;
+	
