@@ -41,4 +41,18 @@ SELECT *
 	
 SELECT *
 	FROM bank.users;
+
+
+
+INSERT INTO bank.users(
+	id, name, lastname, createdat)
+	VALUES (01, 'xavi', 'alonso', current_timestamp);
+
+INSERT INTO bank.infouser(
+	id, phone, address, city, country, user_id)
+	VALUES (01, '3794079256', 'Bransen 805', 'Ctes', 'Arg', 01);
+
+INSERT INTO bank.accounts(
+	id, amount, user_id)
+	VALUES (01, 125000, 01);
 	

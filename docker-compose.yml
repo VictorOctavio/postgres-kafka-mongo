@@ -1,115 +1,119 @@
 # version: '5'
 
 services:
-    postgres:
-      image: postgres:13
-      container_name: postgres
-      restart: always
-      ports:
-          - "5432:5432"
-      environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-      volumes:
-          - postgres_data:/var/lib/postgresql/data
-          - postgres_logs:/var/log/postgresql
-      networks:
-        - mynetwork
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    restart: always
+    command: >
+      -c wal_level=logical
+      -c max_replication_slots=10
+      -c max_wal_senders=10
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
+    networks:
+      - mynetwork
 
-    zookeeper:
-      image: wurstmeister/zookeeper:latest
-      environment:
-        ZOOKEEPER_CLIENT_PORT: 2181
-        ZOOKEEPER_TICK_TIME: 2000
-      ports:
-        - 2181:2181
-      volumes:
-        - zookeeper_data:/zookeeper/data
-        - zookeeper_txns:/zookeeper/txns
-        - zookeeper_logs:/zookeeper/logs
-      networks:
-        - mynetwork
-          
-    kafka:
-      image: wurstmeister/kafka:latest
-      restart: "no"
-      links:
-        - zookeeper
-      ports:
-        - 9092:9092
-      environment:
-        KAFKA_BROKER_ID: 1
-        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-        KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-        KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092
-        KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
-        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-        KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-      volumes:
-        - kafka_data:/kafka/data
-        - kafka_logs:/kafka/logs
-        - kafka_conf:/kafka/config
-      networks:
-        - mynetwork
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+    volumes:
+      - zookeeper_data:/zookeeper/data
+      - zookeeper_txns:/zookeeper/txns
+      - zookeeper_logs:/zookeeper/logs
+    networks:
+      - mynetwork
 
-    debezium:
-      image: debezium/connect:1.9
-      ports:
-        - 8083:8083
-      environment:
-        CONFIG_STORAGE_TOPIC: my_connect_configs
-        OFFSET_STORAGE_TOPIC: my_connect_offsets
-        STATUS_STORAGE_TOPIC: my_connect_statuses
-        BOOTSTRAP_SERVERS: kafka:29092
-      depends_on:
-        - kafka
-        - zookeeper
-        - postgres  
-      volumes:
-        - debezium_conf:/kafka/config
-        - debezium_logs:/debezium/logs
-      networks:
-        - mynetwork
+  kafka:
+    image: wurstmeister/kafka:latest
+    restart: "no"
+    links:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    volumes:
+      - kafka_data:/kafka/data
+      - kafka_logs:/kafka/logs
+      - kafka_conf:/kafka/config
+    networks:
+      - mynetwork
 
-    kafdrop:
-      image: obsidiandynamics/kafdrop
-      restart: "no"
-      environment:
-        KAFKA_BROKERCONNECT: "kafka:29092"
-      ports:
-        - 9000:9000
-      depends_on:
-        - kafka
-      networks:
-        - mynetwork    
+  debezium:
+    image: debezium/connect:1.9
+    ports:
+      - 8083:8083
+    environment:
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_connect_statuses
+      BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - kafka
+      - zookeeper
+      - postgres
+    volumes:
+      - debezium_conf:/kafka/config
+      - debezium_logs:/debezium/logs
+    networks:
+      - mynetwork
 
-    debezium-ui:
-      image: debezium/debezium-ui:2.4
-      depends_on:
-        - debezium
-      container_name: debezium_ui
-      restart: always
-      ports:
-        - "8084:8080"
-      environment:
-        - KAFKA_CONNECT_URIS=http://debezium:8083
-      networks:
-        - mynetwork
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+    ports:
+      - 9000:9000
+    depends_on:
+      - kafka
+    networks:
+      - mynetwork
 
-    pgadmin:
-      image: elestio/pgadmin:REL-8_2
-      depends_on: 
-        - postgres  
-      container_name: pgadmin
-      restart: always
-      ports:
-        - "8082:8080"
-      environment:
-        PGADMIN_DEFAULT_EMAIL: root@gmail.com
-        PGADMIN_DEFAULT_PASSWORD: root
-        PGADMIN_LISTEN_PORT: 8080
-      networks:
-        - mynetwork
+  debezium-ui:
+    image: debezium/debezium-ui:2.4
+    depends_on:
+      - debezium
+    container_name: debezium_ui
+    restart: always
+    ports:
+      - "8084:8080"
+    environment:
+      - KAFKA_CONNECT_URIS=http://debezium:8083
+    networks:
+      - mynetwork
+
+  pgadmin:
+    image: elestio/pgadmin:REL-8_2
+    depends_on:
+      - postgres
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "8082:8080"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_LISTEN_PORT: 8080
+    networks:
+      - mynetwork
 
 networks:
   mynetwork:

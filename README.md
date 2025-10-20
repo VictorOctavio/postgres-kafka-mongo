@@ -53,3 +53,6 @@ Verificar coneccion a mongodb, para ello correr el script testdb.py
 
 Probar que todo funcione correctemente y se nos este monitoreando los cambios y enviando a mongo
 Este README es un ejemplo básico y puedes personalizarlo según las necesidades específicas de tu proyecto.
+
+python3.11 -m venv venv
+venv\Scripts\Activate.ps1  

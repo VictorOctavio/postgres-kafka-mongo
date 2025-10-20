@@ -7,9 +7,9 @@ mongo_collection = mongo_db['users']
 
 # Datos del usuario a insertar
 user_data = {
-    'name': 'Ejemplo',
+    'name': 'Ejemplo Marin',
     'age': 25,
-    'email': 'ejemplo@example.com'
+    'email': 'ejemplo_test@example.com'
 }
 
 # Insertar el documento en la colección
